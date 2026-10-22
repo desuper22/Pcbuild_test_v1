@@ -284,15 +284,118 @@ function OpenBench() {
   );
 }
 
-function ComputerCase({ type }) {
+
+function ComputerCase({ type, motherboardInstalled }) {
   return (
     <group position={[1.35, 1, -0.05]} scale={1.08}>
       {type === "gaming" ? <GamingCase /> : <OpenBench />}
+
+      {motherboardInstalled && (
+  <group
+    position={
+      type === "gaming"
+        ? [0, 0.82, -0.42]
+        : [0, 0.23, -0.12]
+    }
+    rotation={
+      type === "gaming"
+        ? [-Math.PI / 2, 0, 0]
+        : [0, 0, 0]
+    }
+    scale={type === "gaming" ? 0.85 : 0.9}
+  >
+    <Motherboard />
+  </group>
+)}
     </group>
   );
 }
 
-function Workshop({ caseType }) {
+
+
+function Motherboard({ position = [0, 0, 0] }) {
+  return (
+    <group position={position}>
+      {/* Основа платы */}
+      <mesh>
+        <boxGeometry args={[1.02, 0.045, 0.88]} />
+        <meshStandardMaterial
+          color="#17634c"
+          metalness={0.25}
+          roughness={0.65}
+        />
+      </mesh>
+
+      {/* Декоративные дорожки */}
+      {[-0.38, -0.18, 0.05, 0.28].map((x) => (
+        <mesh
+          key={x}
+          position={[x, 0.026, 0]}
+        >
+          <boxGeometry args={[0.012, 0.006, 0.68]} />
+          <meshStandardMaterial color="#74c6a0" />
+        </mesh>
+      ))}
+
+      {/* Сокет процессора */}
+      <mesh position={[-0.12, 0.04, -0.12]}>
+        <boxGeometry args={[0.3, 0.035, 0.3]} />
+        <meshStandardMaterial color="#8995a3" metalness={0.6} />
+      </mesh>
+
+      <mesh position={[-0.12, 0.062, -0.12]}>
+        <boxGeometry args={[0.2, 0.012, 0.2]} />
+        <meshStandardMaterial color="#252e3b" />
+      </mesh>
+
+      {/* Слоты оперативной памяти */}
+      {[-0.3, -0.19, -0.08, 0.03].map((z) => (
+        <mesh
+          key={z}
+          position={[0.24, 0.05, z]}
+        >
+          <boxGeometry args={[0.055, 0.035, 0.09]} />
+          <meshStandardMaterial color="#111923" />
+        </mesh>
+      ))}
+
+      {/* Радиаторы питания */}
+      <mesh position={[-0.38, 0.055, -0.2]}>
+        <boxGeometry args={[0.12, 0.06, 0.34]} />
+        <meshStandardMaterial color="#a1adbb" metalness={0.7} />
+      </mesh>
+
+      {/* Слот видеокарты */}
+      <mesh position={[0.02, 0.055, 0.22]}>
+        <boxGeometry args={[0.63, 0.035, 0.07]} />
+        <meshStandardMaterial color="#b8a36b" metalness={0.65} />
+      </mesh>
+
+      {/* Разъёмы у края платы */}
+      {[-0.25, -0.1, 0.05, 0.2].map((x) => (
+        <mesh key={x} position={[x, 0.045, 0.39]}>
+          <boxGeometry args={[0.08, 0.045, 0.1]} />
+          <meshStandardMaterial color="#111722" />
+        </mesh>
+      ))}
+
+      {/* Крепёжные отверстия */}
+      {[
+        [-0.45, 0.45],
+        [0.45, 0.45],
+        [-0.45, -0.36],
+        [0.45, -0.36],
+      ].map(([x, z], i) => (
+        <mesh key={i} position={[x, 0.027, z]}>
+          <cylinderGeometry args={[0.025, 0.025, 0.012, 16]} />
+          <meshStandardMaterial color="#d4c69a" metalness={0.7} />
+        </mesh>
+      ))}
+    </group>
+  );
+}
+
+function Workshop({ caseType, motherboardInstalled }) {
   return (
     <>
       <color attach="background" args={["#101824"]} />
@@ -310,7 +413,10 @@ function Workshop({ caseType }) {
       <pointLight position={[2, 3, 3]} intensity={20} color="#ffbc78" />
 
       <Desk />
-      <ComputerCase type={caseType} />
+      <ComputerCase
+  type={caseType}
+  motherboardInstalled={motherboardInstalled}
+/>
 
       <OrbitControls
         makeDefault
@@ -327,6 +433,7 @@ function Workshop({ caseType }) {
 
 export default function App() {
   const [caseType, setCaseType] = useState("gaming");
+  const [motherboardInstalled, setMotherboardInstalled] = useState(false);
 
   const selected = caseOptions.find((item) => item.id === caseType);
 
@@ -392,7 +499,10 @@ export default function App() {
             }}
             gl={{ antialias: true }}
           >
-            <Workshop caseType={caseType} />
+            <Workshop
+  caseType={caseType}
+  motherboardInstalled={motherboardInstalled}
+/>
           </Canvas>
 
           <div className="scene-hint">
@@ -404,6 +514,38 @@ export default function App() {
           </div>
         </section>
       </section>
+      
+<section className="parts-panel">
+  <div>
+    <p className="eyebrow">КОМПЛЕКТУЮЩИЕ</p>
+    <h2>Материнская плата</h2>
+    <p>
+      Основа компьютера: к ней подключаются процессор,
+      память и видеокарта.
+    </p>
+  </div>
+
+  <div className="part-action">
+    <strong>MSI B650 · ATX</strong>
+
+    <button
+      className="install-button"
+      onClick={() =>
+        setMotherboardInstalled((current) => !current)
+      }
+    >
+      {motherboardInstalled
+        ? "Снять материнскую плату"
+        : "Установить материнскую плату"}
+    </button>
+
+    <span className="part-status">
+      {motherboardInstalled
+        ? "✓ Плата установлена"
+        : "○ Плата ещё не установлена"}
+    </span>
+  </div>
+</section>
 
       <footer className="workshop-footer">
         <span>PC Builder Lab</span>

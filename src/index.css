@@ -331,3 +331,67 @@ button {
     gap: 8px;
   }
 }
+
+.parts-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  margin-top: 18px;
+  padding: 22px;
+  border: 1px solid #293b53;
+  border-radius: 14px;
+  background: #111a29;
+}
+
+.parts-panel h2 {
+  margin: 6px 0;
+  font-size: 20px;
+}
+
+.parts-panel p:not(.eyebrow) {
+  max-width: 500px;
+  color: #98a9c0;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.part-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.part-action > strong {
+  font-size: 13px;
+}
+
+.install-button {
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 8px;
+  background: #51c7ff;
+  color: #071421;
+  font-weight: 700;
+}
+
+.install-button:hover {
+  background: #9be3ff;
+}
+
+.part-status {
+  color: #9eb3cb;
+  font-size: 12px;
+}
+
+@media (max-width: 600px) {
+  .parts-panel {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .part-action {
+    align-items: stretch;
+  }
+}
